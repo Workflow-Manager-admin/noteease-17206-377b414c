@@ -257,9 +257,9 @@ export const MainContainer = component$(() => {
               fontSize: "1.2rem",
               color: "#222"
             }}>
-              {selectedNote()?.title ?? "No note selected"}
+              {(notes.data.find((n) => n.id === selectedNoteId.value)?.title) ?? "No note selected"}
             </span>
-            {selectedNote()?.category && (
+            {notes.data.find((n) => n.id === selectedNoteId.value)?.category && (
               <span style={{
                 marginLeft: "12px",
                 fontSize: "0.9rem",
@@ -268,12 +268,12 @@ export const MainContainer = component$(() => {
                 padding: "2px 12px",
                 borderRadius: "14px"
               }}>
-                {selectedNote()?.category}
+                {notes.data.find((n) => n.id === selectedNoteId.value)?.category}
               </span>
             )}
           </div>
           <div>
-            {selectedNote() && (
+            {(notes.data.find((n) => n.id === selectedNoteId.value)) && (
               <>
                 <button
                   style={{
@@ -287,7 +287,10 @@ export const MainContainer = component$(() => {
                     fontSize: "1rem",
                     cursor: "pointer"
                   }}
-                  onClick$={() => editNote(selectedNote()!)}
+                  onClick$={() => {
+                    const note = notes.data.find((n) => n.id === selectedNoteId.value);
+                    if (note) editNote(note);
+                  }}
                 >Edit</button>
                 <button
                   style={{
@@ -300,7 +303,10 @@ export const MainContainer = component$(() => {
                     fontSize: "1rem",
                     cursor: "pointer"
                   }}
-                  onClick$={() => deleteNote(selectedNote()!.id)}
+                  onClick$={() => {
+                    const note = notes.data.find((n) => n.id === selectedNoteId.value);
+                    if (note) deleteNote(note.id);
+                  }}
                 >Delete</button>
               </>
             )}
@@ -310,16 +316,16 @@ export const MainContainer = component$(() => {
         <div style={{
           flex: 1, overflowY: "auto", padding: "2.2rem 2rem", color: "#273951", background: "#fff"
         }}>
-          {selectedNote() ? (
+          {(notes.data.find((n) => n.id === selectedNoteId.value)) ? (
             <>
               <div style={{ whiteSpace: "pre-wrap" }}>
-                {selectedNote()?.content}
+                {notes.data.find((n) => n.id === selectedNoteId.value)?.content}
               </div>
               <div style={{marginTop: "2rem"}}>
                 <label html-for="category-select" style={{marginRight: "1rem", fontSize: "1rem", color: "#888"}}>Category:</label>
                 <select
                   id="category-select"
-                  value={selectedNote()?.category}
+                  value={notes.data.find((n) => n.id === selectedNoteId.value)?.category}
                   style={{
                     fontSize: "1rem",
                     padding: "6px 13px",
@@ -328,11 +334,14 @@ export const MainContainer = component$(() => {
                     backgroundColor: "#F5F7FA",
                     color: "#273951"
                   }}
-                  onChange$={e => updateCategory(selectedNote()!.id, (e.target as HTMLSelectElement).value)}
+                  onChange$={e => {
+                    const note = notes.data.find((n) => n.id === selectedNoteId.value);
+                    if (note) updateCategory(note.id, (e.target as HTMLSelectElement).value);
+                  }}
                 >
                   <option value="">Uncategorized</option>
                   {CATEGORY_PRESETS.map(cat => (
-                    <option value={cat}>{cat}</option>
+                    <option value={cat} key={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
@@ -420,7 +429,7 @@ export const MainContainer = component$(() => {
               >
                 <option value="">Uncategorized</option>
                 {CATEGORY_PRESETS.map(cat => (
-                  <option value={cat}>{cat}</option>
+                  <option value={cat} key={cat}>{cat}</option>
                 ))}
               </select>
             </div>
