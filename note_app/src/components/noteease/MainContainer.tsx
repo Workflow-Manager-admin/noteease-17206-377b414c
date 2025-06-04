@@ -53,8 +53,7 @@ export const MainContainer = component$(() => {
         note.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         note.content.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
-  // Find selected note (value, not a function, to avoid Qwik serialization error)
-  const getSelectedNote = () => notes.data.find((n) => n.id === selectedNoteId.value) ?? null;
+  // (removed unused: getSelectedNote)
 
   // PUBLIC_INTERFACE
   /**
